@@ -27,6 +27,8 @@ async function main() {
     host: 'localhost',
     port: 8000,
     site: '',
+    db: 'mongodb://localhost/cashier',
+    redis: 'redis://localhost/',
     logLevel: 'info',
     cluster: false,
     ...customConfig,

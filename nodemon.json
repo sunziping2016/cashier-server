@@ -5,5 +5,5 @@
     "app.ts"
   ],
   "ext": "ts,json",
-  "exec": "ts-node -r source-map-support/register ./app.ts"
+  "exec": "TS_NODE_FILES=true ts-node -r source-map-support/register ./app.ts"
 }

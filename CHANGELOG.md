@@ -14,5 +14,6 @@ All notable changes to this project will be documented in this file.
 - Add command line parser
 - Add logger
 - Add simple server
+- Add Redis (also promisified)
 
 [Unreleased]: https://github.com/sunziping2016/cashier-server/tree/HEAD

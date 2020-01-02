@@ -5,12 +5,26 @@
  */
 import http from 'http';
 import Koa from 'koa';
+import redis from 'redis';
+// @ts-ignore
+import redisCommands from 'redis-commands';
+import { promisify } from 'util';
 import koaLogger from './koaLogger';
+
+redisCommands.list.forEach((key: string) => {
+  redis.RedisClient.prototype[key + 'Async'] =
+    promisify(redis.RedisClient.prototype[key]);
+});
+['exec', 'exec_atomic'].forEach((key) =>
+  redis.Multi.prototype[key + 'Async'] = promisify(redis.Multi.prototype[key]),
+);
 
 export interface ServerConfig {
   host: string;
   port: number;
   site: string;
+  db: string;
+  redis: string;
   logLevel: string;
   cluster: number | boolean;
 }
@@ -18,6 +32,7 @@ export interface ServerConfig {
 export interface CustomContextGlobal {
   config: ServerConfig;
   server: http.Server;
+  redis: redis.RedisClient;
 }
 
 export interface CustomContext {
@@ -47,8 +62,10 @@ export default class Server {
   public async start(config: ServerConfig): Promise<void> {
     const app = this.app = new Koa();
     const server = http.createServer(app.callback());
+    const redisClient = redis.createClient(config.redis);
     app.context.global = {
       config,
+      redis: redisClient,
       server,
     };
     app.use(koaLogger);
@@ -64,9 +81,10 @@ export default class Server {
    */
   public async stop(): Promise<void> {
     if (this.app !== undefined) {
-      const {server} = this.app.context.global;
+      const {server, redis: redisClient} = this.app.context.global;
       await Promise.all([
-        new Promise((resolve, reject) => server.close(resolve)),
+        new Promise((resolve, reject) => redisClient.quit(resolve)),
+        new Promise(resolve => server.close(resolve)),
       ]);
     }
   }

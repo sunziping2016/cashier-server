@@ -10,7 +10,7 @@
     "serve": "node -r source-map-support/register dist/app.js",
     "build": "npm run tslint && npm run build-ts",
     "start": "npm run serve",
-    "test": "mocha -r ts-node/register 'test/**/*.test.ts'",
+    "test": "TS_NODE_FILES=true mocha -r ts-node/register 'test/**/*.test.ts'",
     "test-coverage": "nyc --reporter=lcov --extension=.ts --extension=.js npm test"
   },
   "repository": {
@@ -28,6 +28,7 @@
     "@types/koa": "^2.11.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^13.1.2",
+    "@types/redis": "^2.8.14",
     "@types/supertest": "^2.0.8",
     "@types/winston": "^2.4.4",
     "codecov": "^3.6.1",
@@ -44,6 +45,8 @@
   "dependencies": {
     "command": "0.0.5",
     "koa": "^2.11.0",
+    "redis": "^2.8.0",
+    "redis-commands": "^1.5.0",
     "winston": "^3.2.1"
   }
 }
