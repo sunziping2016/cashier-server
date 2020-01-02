@@ -1,0 +1,49 @@
+{
+  "name": "cashier-server",
+  "version": "0.1.0",
+  "description": "Server of Sun's Double-Entry Accounting System",
+  "scripts": {
+    "watch-server": "nodemon",
+    "build-ts": "tsc",
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "docs": "jsdoc -c .jsdoc.json",
+    "serve": "node -r source-map-support/register dist/app.js",
+    "build": "npm run tslint && npm run build-ts",
+    "start": "npm run serve",
+    "test": "mocha -r ts-node/register 'test/**/*.test.ts'",
+    "test-coverage": "nyc --reporter=json --extension=.ts --extension=.js mocha -r ts-node/register 'test/**/*.test.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunziping2016/cashier-server.git"
+  },
+  "author": "Ziping Sun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sunziping2016/cashier-server/issues"
+  },
+  "homepage": "https://github.com/sunziping2016/cashier-server#readme",
+  "devDependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/koa": "^2.11.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^13.1.2",
+    "@types/supertest": "^2.0.8",
+    "@types/winston": "^2.4.4",
+    "codecov": "^3.6.1",
+    "jsdoc": "^3.6.3",
+    "minami": "^1.2.3",
+    "mocha": "^6.2.2",
+    "nodemon": "^2.0.2",
+    "nyc": "^15.0.0",
+    "supertest": "^4.0.2",
+    "ts-node": "^8.5.4",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "command": "0.0.5",
+    "koa": "^2.11.0",
+    "winston": "^3.2.1"
+  }
+}

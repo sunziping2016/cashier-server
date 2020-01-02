@@ -1,0 +1,7 @@
+/.idea/
+/.nyc_output/
+/coverage/
+/dist/
+/doc/
+/node_modules/
+/config/

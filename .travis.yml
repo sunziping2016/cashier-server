@@ -1,0 +1,21 @@
+sudo: false
+language: node_js
+node_js:
+  - node
+services:
+  - mongodb
+  - redis-server
+cache:
+  directories:
+    - node_modules
+env:
+  - CASHIER_CONFIG_FILE=./config/config.travis.json
+  - CODECOV_TOKEN="225736b7-eff2-4345-8b5c-c9929899e378"
+before_script:
+  - npm prune
+script:
+  - npm run build
+  - npm run docs
+after_success:
+  - codecov -f coverage/*.json
+

@@ -1,0 +1,9 @@
+{
+  "watch": [
+    "src",
+    "config",
+    "app.ts"
+  ],
+  "ext": "ts,json",
+  "exec": "ts-node -r source-map-support/register ./app.ts"
+}
