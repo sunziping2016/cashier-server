@@ -149,4 +149,3 @@ main().catch(x => {
   // tslint:disable-next-line:no-console
   console.error(x);
 });
-

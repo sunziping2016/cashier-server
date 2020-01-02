@@ -9,13 +9,23 @@ cache:
   directories:
     - node_modules
 env:
-  - CASHIER_CONFIG_FILE=./config/config.travis.json
-  - CODECOV_TOKEN="225736b7-eff2-4345-8b5c-c9929899e378"
+  - CASHIER_CONFIG_FILE=./config/config.travis.json CODECOV_TOKEN="225736b7-eff2-4345-8b5c-c9929899e378"
+before_install:
+  - openssl aes-256-cbc -K $encrypted_c34f55dddac7_key -iv $encrypted_c34f55dddac7_iv -in config/config.travis.json.enc -out config/config.travis.json -d
+  - cp config/config.travis.json config/config.test.json
 before_script:
   - npm prune
 script:
   - npm run build
+  - npm run test-coverage
   - npm run docs
 after_success:
-  - codecov -f coverage/*.json
+  - codecov
+deploy:
+  provider: pages
+  local_dir: doc/cashier-server
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
 

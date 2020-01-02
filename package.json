@@ -11,7 +11,7 @@
     "build": "npm run tslint && npm run build-ts",
     "start": "npm run serve",
     "test": "mocha -r ts-node/register 'test/**/*.test.ts'",
-    "test-coverage": "nyc --reporter=json --extension=.ts --extension=.js mocha -r ts-node/register 'test/**/*.test.ts'"
+    "test-coverage": "nyc --reporter=lcov --extension=.ts --extension=.js npm test"
   },
   "repository": {
     "type": "git",

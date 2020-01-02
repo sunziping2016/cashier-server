@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/sunziping2016/cashier-server/branch/master/graph/badge.svg)](https://codecov.io/gh/sunziping2016/cashier-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-It's the server-side WeChat wall for danmu and chatting.
+It's the server-side my double-entry accounting system.
 
 ## Getting Started
 
