@@ -4,12 +4,20 @@
  * @module src/server
  */
 import http from 'http';
-import Koa from 'koa';
+import Koa, {DefaultContext, DefaultState} from 'koa';
+import qs from 'koa-qs';
+import Router from 'koa-router';
+import mongoose from 'mongoose';
 import redis from 'redis';
 // @ts-ignore
 import redisCommands from 'redis-commands';
 import { promisify } from 'util';
+import apiRouter from './api';
+import {Auth} from './core/protocol';
 import koaLogger from './koaLogger';
+import Models from './models';
+import {Jwt} from './models/jwt';
+import {RBACModels, UserDocument} from './models/rbac';
 
 redisCommands.list.forEach((key: string) => {
   redis.RedisClient.prototype[key + 'Async'] =
@@ -25,18 +33,28 @@ export interface ServerConfig {
   site: string;
   db: string;
   redis: string;
+  mediaRoot: string;
   logLevel: string;
   cluster: number | boolean;
 }
 
-export interface CustomContextGlobal {
+export interface CustomContextGlobal extends RBACModels {
   config: ServerConfig;
   server: http.Server;
+  db: mongoose.Mongoose;
   redis: redis.RedisClient;
+  jwt: Jwt;
 }
 
-export interface CustomContext {
+export interface CustomContext extends DefaultContext {
   global: CustomContextGlobal;
+  params?: {[param: string]: string};
+}
+
+export interface CustomState extends DefaultState {
+  auth?: Auth;
+  mediaFiles?: string[];
+  mediaDirs?: string[];
 }
 
 /**
@@ -51,7 +69,7 @@ export interface CustomContext {
  * koa middleware can access to the `global` object through `ctx.global`.
  */
 export default class Server {
-  public app?: Koa<{}, CustomContext>;
+  public app?: Koa<CustomState, CustomContext>;
 
   /**
    * Start the server and initialize models and routes.
@@ -60,15 +78,29 @@ export default class Server {
    *   for available options.
    */
   public async start(config: ServerConfig): Promise<void> {
-    const app = this.app = new Koa();
-    const server = http.createServer(app.callback());
+    const app = this.app = new Koa<CustomState, CustomContext>();
+    app.proxy = true;
+    const db = await mongoose.connect(config.db, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    });
     const redisClient = redis.createClient(config.redis);
+    const server = http.createServer(app.callback());
     app.context.global = {
       config,
+      db,
       redis: redisClient,
       server,
+      ...await Models(config, db, redisClient),
     };
+    qs(app as any);
     app.use(koaLogger);
+    const router = new Router<CustomState, CustomContext>();
+    const api = apiRouter(app.context.global);
+    router.use('/api', api.routes(), api.allowedMethods());
+    app.use(router.routes());
+    app.use(router.allowedMethods());
     await new Promise((resolve, reject) =>
       server
         .listen(config.port, config.host, resolve)
@@ -81,11 +113,13 @@ export default class Server {
    */
   public async stop(): Promise<void> {
     if (this.app !== undefined) {
-      const {server, redis: redisClient} = this.app.context.global;
+      const {db, redis: redisClient, server} = this.app.context.global;
       await Promise.all([
-        new Promise((resolve, reject) => redisClient.quit(resolve)),
+        new Promise((resolve) => redisClient.quit(resolve)),
         new Promise(resolve => server.close(resolve)),
+        db.disconnect(),
       ]);
     }
+    mongoose.models = {};
   }
 }

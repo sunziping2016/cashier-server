@@ -7,3 +7,5 @@
 /config/config.json
 /config/config.test.json
 /config/config.travis.json
+/media
+!/media/.gitkeep

@@ -29,6 +29,7 @@ async function main() {
     site: '',
     db: 'mongodb://localhost/cashier',
     redis: 'redis://localhost/',
+    mediaRoot: './media',
     logLevel: 'info',
     cluster: false,
     ...customConfig,
