@@ -14,6 +14,7 @@ const predefined: RBACPredefined = {
     ['role', 'delete', '删除角色', '删除某个角色'],
     ['user', 'create', '创建用户', '创建一个新的用户'],
     ['user', 'read', '读取用户', '读取用户信息'],
+    ['user', 'readSelf', '更新自己', '读取自己的用户信息'],
     ['user', 'list', '列出所有用户', '获取用户列表'],
     ['user', 'update', '更新用户', '更新用户信息'],
     ['user', 'updateSelf', '更新自己', '更新自己的用户信息'],
@@ -23,12 +24,10 @@ const predefined: RBACPredefined = {
     ['token', 'resume', '请求认证', '续期'],
   ],
   roles: [
-    ['permissionAndRoleAdmin', [
-      ['permission', 'create'],
+    ['roleAdmin', [
       ['permission', 'read'],
       ['permission', 'list'],
       ['permission', 'update'],
-      ['permission', 'delete'],
       ['role', 'create'],
       ['role', 'read'],
       ['role', 'list'],
@@ -47,6 +46,7 @@ const predefined: RBACPredefined = {
       ['user', 'delete'],
     ], '用户管理员', '管理用户及其权限'],
     ['user', [
+      ['user', 'readSelf'],
       ['user', 'updateSelf'],
     ], '普通用户', '最普通的用户'],
     ['default', [
@@ -57,7 +57,7 @@ const predefined: RBACPredefined = {
   ],
   users: [
     ['superuser', 'superuser', [
-      'permissionAndRoleAdmin',
+      'roleAdmin',
       'userAdmin',
       'user',
     ]],

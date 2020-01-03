@@ -8,6 +8,7 @@ import {coreThrow} from '../core/errors';
 import {Auth, ErrorsEnum} from '../core/protocol';
 import {CustomContext, CustomContextGlobal, CustomState} from '../Server';
 import tokenRouter from './token';
+import usersRouter from './users';
 
 async function errorHandler(ctx: CustomContext, next: Koa.Next): Promise<void> {
   try {
@@ -58,6 +59,7 @@ export default function apiRouter(global: CustomContextGlobal)
   : Router<CustomState, CustomContext> {
   const router = new Router<CustomState, CustomContext>();
   const token = tokenRouter();
+  const users = usersRouter();
   router.use(errorHandler);
   router.use(bodyParser({
     onerror: (e, ctx) => {
@@ -76,7 +78,7 @@ export default function apiRouter(global: CustomContextGlobal)
         ctx.state.auth = new Auth(global, await ctx.global.jwt.verify(jwt));
       } catch (err) {
         ctx.set('WWW-Authenticate', 'Bearer');
-        coreThrow(ErrorsEnum.AUTH, err.message);
+        coreThrow(ErrorsEnum.UNAUTHORIZED, err.message);
       }
     }
     try {
@@ -89,5 +91,6 @@ export default function apiRouter(global: CustomContextGlobal)
     }
   });
   router.use('/token', token.routes(), token.allowedMethods());
+  router.use('/users', users.routes(), users.allowedMethods());
   return router;
 }

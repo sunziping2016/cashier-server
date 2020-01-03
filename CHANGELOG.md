@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Add simple server
 - Add Redis (also promisified) for JWT
 - Add Mongoose RBAC model
-- Implement acquire-token-by-username api
+- Implement token acquiring and resuming API
+- Implement user creating and reading API
 
 [Unreleased]: https://github.com/sunziping2016/cashier-server/tree/HEAD

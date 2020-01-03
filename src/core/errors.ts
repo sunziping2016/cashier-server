@@ -32,8 +32,8 @@ export async function corePermission(auth: Auth | undefined,
                                      subject: string, action: string)
   : Promise<void> {
   if (!(auth && await auth.hasPermission(subject, action)))
-    coreThrow(ErrorsEnum.PERMISSION,
-      `Require \"${action} ${subject}\" permission`);
+    coreThrow(ErrorsEnum.FORBIDDEN,
+      `Require "${action} ${subject}" permission`);
 }
 
 export function coreAssert(predict: boolean,
