@@ -3,6 +3,8 @@
   "port": 8000,
   "db": "mongodb://localhost/cashier",
   "redis": "redis://localhost/",
+  "elastic": "http://localhost:9200",
+  "elasticIndexPrefix": "cashier-prod-",
   "mediaRoot": "./media",
   "logLevel": "info",
   "cluster": false

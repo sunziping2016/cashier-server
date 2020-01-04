@@ -3,6 +3,7 @@
  *
  * @module src/server
  */
+import {Client as Elastic} from '@elastic/elasticsearch';
 import http from 'http';
 import Koa, {DefaultContext, DefaultState} from 'koa';
 import qs from 'koa-qs';
@@ -11,7 +12,7 @@ import mongoose from 'mongoose';
 import redis from 'redis';
 // @ts-ignore
 import redisCommands from 'redis-commands';
-import { promisify } from 'util';
+import {promisify} from 'util';
 import apiRouter from './api';
 import {Auth} from './core/protocol';
 import koaLogger from './koaLogger';
@@ -33,16 +34,22 @@ export interface ServerConfig {
   site: string;
   db: string;
   redis: string;
+  elastic: string;
+  elasticIndexPrefix: string;
   mediaRoot: string;
   logLevel: string;
   cluster: number | boolean;
 }
 
-export interface CustomContextGlobal extends RBACModels {
+export interface InitialGlobal {
   config: ServerConfig;
   server: http.Server;
   db: mongoose.Mongoose;
   redis: redis.RedisClient;
+  elastic: Elastic;
+}
+
+export interface CustomContextGlobal extends InitialGlobal, RBACModels {
   jwt: Jwt;
 }
 
@@ -86,13 +93,18 @@ export default class Server {
       useCreateIndex: true,
     });
     const redisClient = redis.createClient(config.redis);
+    const elasticClient = new Elastic({node: config.elastic});
     const server = http.createServer(app.callback());
-    app.context.global = {
+    const initialGlobal: InitialGlobal = {
       config,
       db,
       redis: redisClient,
+      elastic: elasticClient,
       server,
-      ...await Models(config, db, redisClient),
+    };
+    app.context.global = {
+      ...initialGlobal,
+      ...await Models(initialGlobal),
     };
     qs(app as any);
     app.use(koaLogger);

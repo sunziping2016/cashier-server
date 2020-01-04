@@ -10,7 +10,7 @@
     "serve": "node -r source-map-support/register dist/app.js",
     "build": "npm run tslint && npm run build-ts",
     "start": "npm run serve",
-    "test": "TS_NODE_FILES=true mocha -r ts-node/register 'test/**/*.test.ts'",
+    "test": "TS_NODE_FILES=true mocha -r ts-node/register --timeout 10000 'test/**/*.test.ts'",
     "test-coverage": "nyc --reporter=lcov --extension=.ts --extension=.js npm test"
   },
   "repository": {
@@ -51,6 +51,7 @@
     "typescript": "^3.7.4"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^7.5.0",
     "ajv": "^6.10.2",
     "bcrypt": "^3.0.7",
     "command": "0.0.5",
@@ -60,6 +61,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-qs": "^2.0.0",
     "koa-router": "^7.4.0",
+    "mongoosastic": "^4.5.1",
     "mongoose": "^5.8.3",
     "redis": "^2.8.0",
     "redis-commands": "^1.5.0",

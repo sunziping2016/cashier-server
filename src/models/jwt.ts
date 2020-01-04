@@ -18,6 +18,7 @@ import timespan from 'jsonwebtoken/lib/timespan';
 import redis from 'redis';
 import { promisify } from 'util';
 import logger from 'winston';
+import {InitialGlobal} from '../Server';
 import { randomAlnumString } from '../utils';
 
 const jwtIdLength = 40;
@@ -168,8 +169,8 @@ export class Jwt {
   }
 }
 
-export default async function(redisClient: redis.RedisClient): Promise<Jwt> {
-  const model = new Jwt(redisClient);
+export default async function(initialGlobal: InitialGlobal): Promise<Jwt> {
+  const model = new Jwt(initialGlobal.redis);
   if (cluster.isMaster || cluster.worker.id === 1) {
     let secretKey = await model.getSecretKey();
     if (!secretKey) {

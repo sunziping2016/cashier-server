@@ -5,6 +5,7 @@ node_js:
 services:
   - mongodb
   - redis-server
+  - elasticsearch
 cache:
   directories:
     - node_modules
@@ -14,6 +15,7 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_c34f55dddac7_key -iv $encrypted_c34f55dddac7_iv -in config/config.travis.json.enc -out config/config.travis.json -d
   - cp config/config.travis.json config/config.test.json
 before_script:
+  - sleep 10
   - npm prune
 script:
   - npm run build

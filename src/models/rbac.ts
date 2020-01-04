@@ -4,10 +4,12 @@
  * @module src/models/users
  */
 import bcrypt from 'bcrypt';
+// @ts-ignore
+import mongoosastic from 'mongoosastic';
 import mongoose from 'mongoose';
-import { promisify } from 'util';
+import {promisify} from 'util';
 import logger from 'winston';
-import { ServerConfig} from '../Server';
+import {InitialGlobal} from '../Server';
 import {
   addDeleted,
   AddDeletedDocument,
@@ -126,8 +128,8 @@ async function initUsers(roleModel: mongoose.Model<RoleDocument>,
   await userModel.insertMany(users);
 }
 
-export default async (config: ServerConfig,
-                      db: mongoose.Mongoose): Promise<RBACModels> => {
+export default async (initialGlobal: InitialGlobal): Promise<RBACModels> => {
+  const {config, db, elastic} = initialGlobal;
   const listCollectionsAsync = promisify((callback: any) => {
     db.connection.db.listCollections().toArray(callback);
   });
@@ -148,6 +150,11 @@ export default async (config: ServerConfig,
     description: String,
   });
   permissionSchema.index({ subject: 1, action: 1 }, { unique: true });
+  permissionSchema.plugin(mongoosastic, {
+    esClient: elastic,
+    index: config.elasticIndexPrefix + 'permissions',
+    type: 'permission',
+  });
   /**
    * Available as `ctx.global.roles`. Contains following fields:
    * - `name`: name of the role. Required.
@@ -163,6 +170,11 @@ export default async (config: ServerConfig,
     description: String,
   });
   roleSchema.index({ name: 1 }, { unique: true });
+  roleSchema.plugin(mongoosastic, {
+    esClient: elastic,
+    index: config.elasticIndexPrefix + 'roles',
+    type: 'role',
+  });
   const permissionModel = db.model<PermissionDocument>('permissions',
     permissionSchema);
   const roleModel = db.model<RoleDocument>('roles', roleSchema);
@@ -174,6 +186,16 @@ export default async (config: ServerConfig,
     logger.info('Initialize roles database');
     await initRoles(permissionModel, roleModel, predefined.roles);
   }
+  await new Promise((resolve, reject) => {
+    const stream = permissionModel.synchronize();
+    stream.on('close', resolve);
+    stream.on('error', reject);
+  });
+  await new Promise((resolve, reject) => {
+    const stream = roleModel.synchronize();
+    stream.on('close', resolve);
+    stream.on('error', reject);
+  });
   /**
    * Available as `ctx.global.users`. Contains following fields:
    * - `username`: String. Required. Should be unique for users who are not
@@ -227,11 +249,21 @@ export default async (config: ServerConfig,
       return false;
     return bcrypt.compare(password, this.password);
   };
+  userSchema.plugin(mongoosastic, {
+    esClient: elastic,
+    index: config.elasticIndexPrefix + 'users',
+    type: 'user',
+  });
   const userModel = db.model<UserDocument, UserModel>('users', userSchema);
   if (collections.indexOf('users') === -1 && predefined.users) {
     logger.info('Initialize users database');
     await initUsers(roleModel, userModel, predefined.users);
   }
+  await new Promise((resolve, reject) => {
+    const stream = userModel.synchronize();
+    stream.on('close', resolve);
+    stream.on('error', reject);
+  });
   return {
     permissions: permissionModel,
     roles: roleModel,

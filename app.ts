@@ -29,6 +29,8 @@ async function main() {
     site: '',
     db: 'mongodb://localhost/cashier',
     redis: 'redis://localhost/',
+    elastic: 'http://localhost:9200',
+    elasticIndexPrefix: 'cashier',
     mediaRoot: './media',
     logLevel: 'info',
     cluster: false,

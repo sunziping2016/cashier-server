@@ -1,4 +1,4 @@
-import {PermissionDocument, RoleDocument, UserDocument} from '../models/rbac';
+import {PermissionDocument, RoleDocument} from '../models/rbac';
 import {CustomContextGlobal} from '../Server';
 
 export interface AuthData {
