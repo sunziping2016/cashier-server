@@ -4,6 +4,7 @@
     "config",
     "app.ts"
   ],
-  "ext": "ts,json",
-  "exec": "TS_NODE_FILES=true ts-node -r source-map-support/register ./app.ts"
+  "ignore": ["src/core/query/parser.ts"],
+  "ext": "ts,json,pegjs",
+  "exec": "npm run generate && npm run tslint && TS_NODE_FILES=true ts-node -r source-map-support/register ./app.ts"
 }

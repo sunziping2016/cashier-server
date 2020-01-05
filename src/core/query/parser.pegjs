@@ -1,0 +1,169 @@
+{
+const buildFunctionNode = nodeTypes.function.buildNodeWithArgumentNodes;
+const buildLiteralNode = nodeTypes.literal.buildNode;
+const buildNamedArgNode = nodeTypes.namedArg.buildNode;
+const buildQueryNode = nodeTypes.query.buildNode;
+const buildWildcardNode = nodeTypes.wildcard.buildNode;
+const { wildcardSymbol } = nodeTypes.wildcard;
+}
+
+start
+  = Space* query:OrQuery? Space* {
+    if (query !== null) return query;
+    return nodeTypes.function.buildNode('is', '*', '*');
+  }
+
+OrQuery
+  = left:AndQuery Or right:OrQuery {
+    return buildFunctionNode('or', [left, right]);
+  }
+  / AndQuery
+
+AndQuery
+  = left:NotQuery And right:AndQuery {
+    return buildFunctionNode('and', [left, right]);
+  }
+  / NotQuery
+
+NotQuery
+  = Not query:SubQuery {
+    return buildFunctionNode('not', [query]);
+  }
+  / SubQuery
+
+SubQuery
+  = '(' Space* query:OrQuery Space* ')' { return query; }
+  / Expression
+
+Expression
+  = FieldRangeExpression
+  / FieldValueExpression
+  / ValueExpression
+
+Field "fieldName"
+  = Literal
+
+FieldRangeExpression
+  = field:Field Space* operator:RangeOperator Space* value:Literal {
+    const range = buildNamedArgNode(operator, value);
+    return buildFunctionNode('range', [field, range]);
+  }
+
+FieldValueExpression
+  = field:Field Space* ':' Space* partial:ListOfValues {
+    return partial(field);
+  }
+
+ValueExpression
+  = partial:Value {
+    const field = buildLiteralNode(null);
+    return partial(field);
+  }
+
+ListOfValues
+  = '(' Space* partial:OrListOfValues Space* ')' { return partial; }
+  / Value
+
+OrListOfValues
+  = partialLeft:AndListOfValues Or partialRight:OrListOfValues {
+    return (field) => buildFunctionNode('or', [partialLeft(field), partialRight(field)]);
+  }
+  / AndListOfValues
+
+AndListOfValues
+  = partialLeft:NotListOfValues And partialRight:AndListOfValues {
+    return (field) => buildFunctionNode('and', [partialLeft(field), partialRight(field)]);
+  }
+  / NotListOfValues
+
+NotListOfValues
+  = Not partial:ListOfValues {
+    return (field) => buildFunctionNode('not', [partial(field)]);
+  }
+  / ListOfValues
+
+Value "value"
+  = value:QuotedString {
+    const isPhrase = buildLiteralNode(true);
+    return (field) => buildFunctionNode('is', [field, value, isPhrase]);
+  }
+  / value:UnquotedLiteral {
+    const isPhrase = buildLiteralNode(false);
+    return (field) => buildFunctionNode('is', [field, value, isPhrase]);
+  }
+  / value:QueryValue
+
+Or "OR"
+  = Space+ 'or'i Space+
+
+And "AND"
+  = Space+ 'and'i Space+
+
+Not "NOT"
+  = 'not'i Space+
+
+Literal "literal"
+  = QuotedString / UnquotedLiteral
+
+QuotedString
+  = '"' chars:QuotedCharacter* '"' {
+    return buildLiteralNode(chars.join(''));
+  }
+
+QuotedCharacter
+  = EscapedWhitespace
+  / '\\' char:[\\"] { return char; }
+  / char:[^"] { return char; }
+
+UnquotedLiteral
+  = chars:UnquotedCharacter+ {
+     const sequence = chars.join('').trim();
+     if (sequence === 'null') return buildLiteralNode(null);
+     if (sequence === 'true') return buildLiteralNode(true);
+     if (sequence === 'false') return buildLiteralNode(false);
+     if (chars.includes(wildcardSymbol)) return buildWildcardNode(sequence);
+     const num = Number(sequence);
+     const value = isNaN(num) ? sequence : num;
+     return buildLiteralNode(value);
+   }
+
+UnquotedCharacter
+  = EscapedWhitespace
+  / EscapedSpecialCharacter
+  / EscapedKeyword
+  / Wildcard
+  / !SpecialCharacter !Keyword char:. { return char; }
+
+Wildcard
+  = '*' { return wildcardSymbol; }
+
+EscapedWhitespace
+  = '\\t' { return '\t'; }
+  / '\\r' { return '\r'; }
+  / '\\n' { return '\n'; }
+
+EscapedSpecialCharacter
+  = '\\' char:SpecialCharacter { return char; }
+
+EscapedKeyword
+  = '\\' keyword:('or'i / 'and'i / 'not'i) { return keyword; }
+
+Keyword
+  = Or / And / Not
+
+SpecialCharacter
+  = [\\():<>"*@.]
+
+RangeOperator
+  = '<=' { return 'lte'; }
+  / '>=' { return 'gte'; }
+  / '<' { return 'lt'; }
+  / '>' { return 'gt'; }
+
+Space "whitespace"
+  = [\ \t\r\n]
+
+QueryValue
+  = '@' index:Literal '(' Space* query:OrQuery? Space* ')' path:('.' Literal)* {
+    return (field) => buildQueryNode(index, query, path.map(x => x[1]));
+  }

@@ -10,6 +10,7 @@ import {
   coreValidate,
 } from './errors';
 import {CoreRequest, CoreResponse, ErrorsEnum} from './protocol';
+import {parse} from './query/parser';
 
 const ajv = new Ajv();
 
@@ -115,62 +116,63 @@ export async function listUsers(request: CoreRequest,
   : Promise<CoreResponse> {
   await corePermission(request.auth, 'user', 'list');
   const get = request.get || {};
-  coreValidate(listUserSchema, get);
-  const filter: any = {};
-  if (get.filter) {
-    if (get.filter.search !== undefined) {
-      const search = get.filter.search
-        .split(/\s+/).filter((x: string) => !!x)
-        .map((x: string) =>
-          new RegExp(x.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&'), 'i'));
-      if (search.length !== 0) {
-        filter.$or = filter.$or || [];
-        search.forEach((x: RegExp) => {
-          filter.$or.push({username: {$regex: x}});
-          filter.$or.push({email: {$regex: x}});
-        });
-      }
-    }
-    if (get.filter.username !== undefined)
-      filter.username = get.filter.username;
-    if (get.filter.email !== undefined)
-      filter.email = get.filter.email;
-    if (get.filter.role !== undefined)
-      filter.role = get.filter.role;
-    if (get.filter.blocked !== undefined) {
-      filter.blocked = get.filter.blocked === 'true' ? true : {$ne: true};
-    }
-  }
-  const order = get.order || 'asc';
-  const limit = get.limit ? parseInt(get.limit, 10) : 10;
-  const offset = get.offset ? parseInt(get.offset, 10) : 0;
-  const sort: any = {};
-  const result: any = {};
-  if (get.sortBy === undefined || get.sortBy === '_id') {
-    sort._id = order;
-    if (get.lastId !== undefined) {
-      filter._id = {[order === 'asc' ? '$gt' : '$lt']: get.lastId};
-      result.lastId = filter.lastId;
-    }
-  } else {
-    sort[get.sortBy] = order;
-  }
-  const query = global.users.find(filter)
-    .sort(sort)
-    .limit(limit)
-    .skip(offset);
-  if (get.populate !== 'true')
-    query.select('_id');
-  result.data = await query;
-  if ((get.sortBy === undefined || get.sortBy === '_id') &&
-    result.data.length !== 0) {
-    result.lastId = result.data[result.data.length - 1]._id;
-  }
-  if (get.populate !== 'true')
-    result.data = result.data.map((x: UserDocument) => x._id);
-  if (get.count === 'true') {
-    delete filter._id;
-    result.total = await global.users.count(filter);
-  }
-  return coreOkay(result);
+  return coreOkay(parse(get.query));
+  // coreValidate(listUserSchema, get);
+  // const filter: any = {};
+  // if (get.filter) {
+  //   if (get.filter.search !== undefined) {
+  //     const search = get.filter.search
+  //       .split(/\s+/).filter((x: string) => !!x)
+  //       .map((x: string) =>
+  //         new RegExp(x.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&'), 'i'));
+  //     if (search.length !== 0) {
+  //       filter.$or = filter.$or || [];
+  //       search.forEach((x: RegExp) => {
+  //         filter.$or.push({username: {$regex: x}});
+  //         filter.$or.push({email: {$regex: x}});
+  //       });
+  //     }
+  //   }
+  //   if (get.filter.username !== undefined)
+  //     filter.username = get.filter.username;
+  //   if (get.filter.email !== undefined)
+  //     filter.email = get.filter.email;
+  //   if (get.filter.role !== undefined)
+  //     filter.role = get.filter.role;
+  //   if (get.filter.blocked !== undefined) {
+  //     filter.blocked = get.filter.blocked === 'true' ? true : {$ne: true};
+  //   }
+  // }
+  // const order = get.order || 'asc';
+  // const limit = get.limit ? parseInt(get.limit, 10) : 10;
+  // const offset = get.offset ? parseInt(get.offset, 10) : 0;
+  // const sort: any = {};
+  // const result: any = {};
+  // if (get.sortBy === undefined || get.sortBy === '_id') {
+  //   sort._id = order;
+  //   if (get.lastId !== undefined) {
+  //     filter._id = {[order === 'asc' ? '$gt' : '$lt']: get.lastId};
+  //     result.lastId = filter.lastId;
+  //   }
+  // } else {
+  //   sort[get.sortBy] = order;
+  // }
+  // const query = global.users.find(filter)
+  //   .sort(sort)
+  //   .limit(limit)
+  //   .skip(offset);
+  // if (get.populate !== 'true')
+  //   query.select('_id');
+  // result.data = await query;
+  // if ((get.sortBy === undefined || get.sortBy === '_id') &&
+  //   result.data.length !== 0) {
+  //   result.lastId = result.data[result.data.length - 1]._id;
+  // }
+  // if (get.populate !== 'true')
+  //   result.data = result.data.map((x: UserDocument) => x._id);
+  // if (get.count === 'true') {
+  //   delete filter._id;
+  //   result.total = await global.users.count(filter);
+  // }
+  // return coreOkay(result);
 }

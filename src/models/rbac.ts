@@ -181,21 +181,21 @@ export default async (initialGlobal: InitialGlobal): Promise<RBACModels> => {
   if (collections.indexOf('permissions') === -1 && predefined.permissions) {
     logger.info('Initialize permissions database');
     await initPermissions(permissionModel, predefined.permissions);
+    await new Promise((resolve, reject) => {
+      const stream = permissionModel.synchronize();
+      stream.on('close', resolve);
+      stream.on('error', reject);
+    });
   }
   if (collections.indexOf('roles') === -1 && predefined.roles) {
     logger.info('Initialize roles database');
     await initRoles(permissionModel, roleModel, predefined.roles);
+    await new Promise((resolve, reject) => {
+      const stream = roleModel.synchronize();
+      stream.on('close', resolve);
+      stream.on('error', reject);
+    });
   }
-  await new Promise((resolve, reject) => {
-    const stream = permissionModel.synchronize();
-    stream.on('close', resolve);
-    stream.on('error', reject);
-  });
-  await new Promise((resolve, reject) => {
-    const stream = roleModel.synchronize();
-    stream.on('close', resolve);
-    stream.on('error', reject);
-  });
   /**
    * Available as `ctx.global.users`. Contains following fields:
    * - `username`: String. Required. Should be unique for users who are not
@@ -258,12 +258,12 @@ export default async (initialGlobal: InitialGlobal): Promise<RBACModels> => {
   if (collections.indexOf('users') === -1 && predefined.users) {
     logger.info('Initialize users database');
     await initUsers(roleModel, userModel, predefined.users);
+    await new Promise((resolve, reject) => {
+      const stream = userModel.synchronize();
+      stream.on('close', resolve);
+      stream.on('error', reject);
+    });
   }
-  await new Promise((resolve, reject) => {
-    const stream = userModel.synchronize();
-    stream.on('close', resolve);
-    stream.on('error', reject);
-  });
   return {
     permissions: permissionModel,
     roles: roleModel,

@@ -9,3 +9,4 @@
 /config/config.travis.json
 /media
 !/media/.gitkeep
+/src/core/query/query.ts

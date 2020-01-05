@@ -6,7 +6,6 @@
 import {Client as Elastic} from '@elastic/elasticsearch';
 import http from 'http';
 import Koa, {DefaultContext, DefaultState} from 'koa';
-import qs from 'koa-qs';
 import Router from 'koa-router';
 import mongoose from 'mongoose';
 import redis from 'redis';
@@ -16,6 +15,7 @@ import {promisify} from 'util';
 import apiRouter from './api';
 import {Auth} from './core/protocol';
 import koaLogger from './koaLogger';
+import koaQs from './koaQs';
 import Models from './models';
 import {Jwt} from './models/jwt';
 import {RBACModels, UserDocument} from './models/rbac';
@@ -106,7 +106,13 @@ export default class Server {
       ...initialGlobal,
       ...await Models(initialGlobal),
     };
-    qs(app as any);
+    koaQs(app, {decoder: c => {
+      try {
+        return decodeURIComponent(c);
+      } catch (e) {
+        return c;
+      }
+    }});
     app.use(koaLogger);
     const router = new Router<CustomState, CustomContext>();
     const api = apiRouter(app.context.global);
