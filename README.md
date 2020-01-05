@@ -1,4 +1,4 @@
-# WeWall Improved Server
+# Cashier Server
 
 [![Build Status](https://travis-ci.org/sunziping2016/cashier-server.svg?branch=master)](https://travis-ci.org/sunziping2016/cashier-server)
 [![codecov](https://codecov.io/gh/sunziping2016/cashier-server/branch/master/graph/badge.svg)](https://codecov.io/gh/sunziping2016/cashier-server)
