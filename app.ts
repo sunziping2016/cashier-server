@@ -1,6 +1,7 @@
 import cluster from 'cluster';
 import program from 'commander';
 import os from 'os';
+import path from 'path';
 import logger from 'winston';
 import Server, {ServerConfig} from './src/Server';
 
@@ -21,7 +22,8 @@ async function main() {
       x => parseInt(x, 10))
     .option('-v, --verbose', 'show verbose information')
     .parse(process.argv);
-  const customConfig = await import(program.config);
+  const customConfig = await import(path.resolve(
+    process.cwd(), program.config));
 
   const config: ServerConfig = {
     host: 'localhost',

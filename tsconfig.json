@@ -9,12 +9,10 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "baseUrl": ".",
-    "esModuleInterop": true,
-    "resolveJsonModule": true
+    "esModuleInterop": true
   },
   "include": [
     "app.ts",
-    "config/**/*.json",
     "src/**/*",
     "test/**/*"
   ]
