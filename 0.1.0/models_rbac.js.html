@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>models/rbac.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html">Jwt</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#getSecretKey">getSecretKey</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#revoke">revoke</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#setSecretKey">setSecretKey</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#sign">sign</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#verify">verify</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_jwt-RevokedError.html">RevokedError</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-Permission.html">Permission</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-Role.html">Role</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-User.html">User</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_users-User.html#checkPassword">checkPassword</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_server-Server.html">Server</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_server-Server.html#start">start</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_server-Server.html#stop">stop</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_koa-logger.html">src/koa-logger</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_koa-logger.html#~koaLogger">koaLogger</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_hooks.html">src/models/hooks</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_hooks.html#~addDeleted">addDeleted</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_hooks.html#~addFileFields">addFileFields</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_jwt.html">src/models/jwt</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_users.html">src/models/users</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_server.html">src/server</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_utils.html">src/utils</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_utils.html#~randomAlnumString">randomAlnumString</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">models/rbac.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
+    return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * RBAC and user models, store the information and permission of all users.
+ *
+ * @module src/models/users
+ */
+const bcrypt_1 = __importDefault(require("bcrypt"));
+// @ts-ignore
+const mongoosastic_1 = __importDefault(require("mongoosastic"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const util_1 = require("util");
+const winston_1 = __importDefault(require("winston"));
+const hooks_1 = require("./hooks");
+const rbacPredefined_1 = __importDefault(require("./rbacPredefined"));
+function initPermissions(model, data) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const permissions = data.map((permission) => {
+            return {
+                subject: permission[0],
+                action: permission[1],
+                displayName: permission[2],
+                description: permission[3],
+            };
+        });
+        yield model.insertMany(permissions);
+    });
+}
+function initRoles(permissionModel, roleModel, data) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const roles = yield Promise.all(data.map((role) => __awaiter(this, void 0, void 0, function* () {
+            return {
+                name: role[0],
+                permissions: yield Promise.all(role[1].map((permission) => __awaiter(this, void 0, void 0, function* () {
+                    const doc = yield permissionModel.findOne({
+                        subject: permission[0],
+                        action: permission[1],
+                    });
+                    if (doc === null)
+                        throw new Error(`Cannot find the permission ` +
+                            `${permission[0]}.${permission[1]}`);
+                    return doc._id;
+                }))),
+                displayName: role[2],
+                description: role[3],
+            };
+        })));
+        yield roleModel.insertMany(roles);
+    });
+}
+function initUsers(roleModel, userModel, data) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const users = yield Promise.all(data.map((user) => __awaiter(this, void 0, void 0, function* () {
+            return {
+                username: user[0],
+                password: yield bcrypt_1.default.hash(user[1], 10),
+                roles: yield Promise.all(user[2].map((role) => __awaiter(this, void 0, void 0, function* () {
+                    const doc = yield roleModel.findOne({ name: role });
+                    if (doc === null) {
+                        throw new Error(`Cannot find the role ${role}`);
+                    }
+                    return doc._id;
+                }))),
+            };
+        })));
+        yield userModel.insertMany(users);
+    });
+}
+exports.default = (initialGlobal) => __awaiter(void 0, void 0, void 0, function* () {
+    const { config, db, elastic } = initialGlobal;
+    const listCollectionsAsync = util_1.promisify((callback) => {
+        db.connection.db.listCollections().toArray(callback);
+    });
+    const collections = (yield listCollectionsAsync())
+        .map((x) => x.name);
+    /**
+     * Available as `ctx.global.permissions`. Contains following fields:
+     * - `subject`: subject of the permission. It should be a noun. Required.
+     * - `action`: action of the permission. It should be a verb. Required.
+     * - `displayName`: display name of the permission in Chinese.
+     * - `description`: description of the permission in Chinese.
+     * @class Permission
+     */
+    const permissionSchema = new mongoose_1.default.Schema({
+        subject: { type: String, required: true },
+        action: { type: String, required: true },
+        displayName: String,
+        description: String,
+    });
+    permissionSchema.index({ subject: 1, action: 1 }, { unique: true });
+    permissionSchema.plugin(mongoosastic_1.default, {
+        esClient: elastic,
+        index: config.elasticIndexPrefix + 'permissions',
+        type: 'permission',
+    });
+    hooks_1.addSearchMethod(permissionSchema, new Set([
+        '_v',
+    ]));
+    /**
+     * Available as `ctx.global.roles`. Contains following fields:
+     * - `name`: name of the role. Required.
+     * - `permissions`: array of id pointing to `permissions` collection.
+     * - `displayName`: display name of the role in Chinese.
+     * - `description`: description of the role in Chinese.
+     * @class Role
+     */
+    const roleSchema = new mongoose_1.default.Schema({
+        name: { type: String, required: true },
+        permissions: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'permissions' }],
+        displayName: String,
+        description: String,
+    });
+    roleSchema.index({ name: 1 }, { unique: true });
+    roleSchema.plugin(mongoosastic_1.default, {
+        esClient: elastic,
+        index: config.elasticIndexPrefix + 'roles',
+        type: 'role',
+    });
+    hooks_1.addSearchMethod(roleSchema, new Set([
+        '_v',
+    ]));
+    const permissionModel = db.model('permissions', permissionSchema);
+    const roleModel = db.model('roles', roleSchema);
+    if (collections.indexOf('permissions') === -1 &amp;&amp; rbacPredefined_1.default.permissions) {
+        winston_1.default.info('Initialize permissions database');
+        yield initPermissions(permissionModel, rbacPredefined_1.default.permissions);
+        yield new Promise((resolve, reject) => {
+            const stream = permissionModel.synchronize();
+            stream.on('close', resolve);
+            stream.on('error', reject);
+        });
+    }
+    if (collections.indexOf('roles') === -1 &amp;&amp; rbacPredefined_1.default.roles) {
+        winston_1.default.info('Initialize roles database');
+        yield initRoles(permissionModel, roleModel, rbacPredefined_1.default.roles);
+        yield new Promise((resolve, reject) => {
+            const stream = roleModel.synchronize();
+            stream.on('close', resolve);
+            stream.on('error', reject);
+        });
+    }
+    /**
+     * Available as `ctx.global.users`. Contains following fields:
+     * - `username`: String. Required. Should be unique for users who are not
+     *   deleted.
+     * - `password`: String. Required. `null` to disable authenticate.
+     * - `roles`: array of id pointing to `roles` collection.
+     * - `email`: String.
+     * - `nickname`: String.
+     * - `avatar`: String. Path to avatar. Automatically deleted old file.
+     * - `avatarThumbnail64`: String. Path to avatar thumbnail.
+     * - `blocked`: Boolean. Disable authenticate.
+     * - `deleted`: Boolean. Automatic field.
+     * @class User
+     */
+    const userSchema = new mongoose_1.default.Schema({
+        username: { type: String, required: true },
+        password: { type: String, required: true },
+        roles: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: 'roles' }],
+        email: String,
+        nickname: String,
+        avatar: String,
+        avatarThumbnail64: String,
+        blocked: Boolean,
+        deleted: { type: Boolean, index: true },
+    }, { timestamps: true });
+    userSchema.index({ username: 1 }, {
+        unique: true,
+        partialFilterExpression: {
+            deleted: false,
+        },
+    });
+    userSchema.index({ email: 1 }, {
+        unique: true,
+        partialFilterExpression: {
+            $and: [
+                { email: { $exists: true } },
+                { deleted: false },
+            ],
+        },
+    });
+    hooks_1.addDeleted(userSchema);
+    hooks_1.addFileFields(userSchema, ['avatar', 'avatarThumbnail64'], config.mediaRoot);
+    /**
+     * Check whether password is okay.
+     * @param password {string} password to check against.
+     * @return {Promise.&lt;boolean>} whether password is correct.
+     * @function module:src/models/users~User#checkPassword
+     */
+    userSchema.methods.checkPassword = function (password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.password)
+                return false;
+            return bcrypt_1.default.compare(password, this.password);
+        });
+    };
+    userSchema.plugin(mongoosastic_1.default, {
+        esClient: elastic,
+        index: config.elasticIndexPrefix + 'users',
+        type: 'user',
+    });
+    hooks_1.addSearchMethod(userSchema, new Set([
+        '_v',
+        'password',
+    ]));
+    const userModel = db.model('users', userSchema);
+    if (collections.indexOf('users') === -1 &amp;&amp; rbacPredefined_1.default.users) {
+        winston_1.default.info('Initialize users database');
+        yield initUsers(roleModel, userModel, rbacPredefined_1.default.users);
+        yield new Promise((resolve, reject) => {
+            const stream = userModel.synchronize();
+            stream.on('close', resolve);
+            stream.on('error', reject);
+        });
+    }
+    return {
+        permissions: permissionModel,
+        roles: roleModel,
+        users: userModel,
+    };
+});
+//# sourceMappingURL=rbac.js.map</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Sun Jan 12 2020 02:29:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

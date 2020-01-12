@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>models/jwt.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html">Jwt</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#getSecretKey">getSecretKey</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#revoke">revoke</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#setSecretKey">setSecretKey</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#sign">sign</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#verify">verify</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_jwt-RevokedError.html">RevokedError</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-Permission.html">Permission</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-Role.html">Role</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-User.html">User</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_users-User.html#checkPassword">checkPassword</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_server-Server.html">Server</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_server-Server.html#start">start</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_server-Server.html#stop">stop</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_koa-logger.html">src/koa-logger</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_koa-logger.html#~koaLogger">koaLogger</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_hooks.html">src/models/hooks</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_hooks.html#~addDeleted">addDeleted</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_hooks.html#~addFileFields">addFileFields</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_jwt.html">src/models/jwt</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_users.html">src/models/users</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_server.html">src/server</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_utils.html">src/utils</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_utils.html#~randomAlnumString">randomAlnumString</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">models/jwt.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
+    return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * This model is used to sign and revoke JWT. Traditional JWT is stateless.
+ * Thus it cannot be default. We give every JWT an id and build an index in
+ * Redis to make revoking JWT possible.
+ *
+ * @module src/models/jwt
+ */
+const cluster_1 = __importDefault(require("cluster"));
+const crypto_1 = __importDefault(require("crypto"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+// @ts-ignore
+const timespan_1 = __importDefault(require("jsonwebtoken/lib/timespan"));
+const util_1 = require("util");
+const winston_1 = __importDefault(require("winston"));
+const utils_1 = require("../utils");
+const jwtIdLength = 40;
+const jwtSignAsync = util_1.promisify(jsonwebtoken_1.default.sign);
+const jwtVerifyAsync = util_1.promisify(jsonwebtoken_1.default.verify);
+const cryptoRandomBytesAsync = util_1.promisify(crypto_1.default.randomBytes);
+// Promisify JSON web token
+['verify', 'sign'].forEach((key) => {
+    jsonwebtoken_1.default[key] = util_1.promisify(jsonwebtoken_1.default[key]);
+});
+// noinspection JSValidateJSDoc
+/**
+ * Throw when JWT is revoked.
+ *
+ * @extends jsonwebtoken.JsonWebTokenError
+ */
+class RevokedError extends jsonwebtoken_1.default.JsonWebTokenError {
+    constructor(message, error) {
+        super(message, error);
+        if (Error.captureStackTrace)
+            Error.captureStackTrace(this, this.constructor);
+        this.name = 'RevokedError';
+    }
+}
+/**
+ * JWT model，including following property:
+ * - JsonWebTokenError: base class for all JWT errors, may be thrown when
+ *   calling `verify`.
+ * - NotBeforeError: not used.
+ * - TokenExpiredError: JWT expired, may be thrown when calling `verify`.
+ * - RevokedError: JWT revoked, may be thrown when calling `verify`.
+ *
+ * Available as `ctx.global.jwt`.
+ */
+class Jwt {
+    // noinspection JSValidateJSDoc
+    /**
+     * constructor of JWT model.
+     * @param client {redis.RedisClient} redis client
+     */
+    constructor(client) {
+        this.client = client;
+        Object.assign(this, {
+            JsonWebTokenError: jsonwebtoken_1.default.JsonWebTokenError,
+            NotBeforeError: jsonwebtoken_1.default.NotBeforeError,
+            TokenExpiredError: jsonwebtoken_1.default.TokenExpiredError,
+            RevokedError,
+        });
+    }
+    /**
+     * Get `jwt:secretKey` from redis, return null if not exist.
+     *
+     * @return {Promise.&lt;Buffer | null>} SecretKey
+     */
+    getSecretKey() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.client.getAsync('jwt:secretKey');
+            if (result)
+                return Buffer.from(result);
+            return null;
+        });
+    }
+    /**
+     * Save `jwt:secretKey` to redis.
+     *
+     * @param secretKey {Buffer} 256 byte random string
+     */
+    setSecretKey(secretKey) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.client.setAsync('jwt:secretKey', secretKey.toString());
+        });
+    }
+    /**
+     * Sign JWT. Payload should contain `uid` and options should contain
+     * `expiresIn`.
+     *
+     * @param payload {object} JWT payload.
+     * @param options {object} see
+     *        [node-jsonwebtoken](https://github.com/auth0/node-jsonwebtoken).
+     * @return {Promise.&lt;string>} generated JWT.
+     */
+    sign(payload, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const timestamp = payload.iat = Math.floor(Date.now() / 1000);
+            if (options.expiresIn !== undefined) {
+                payload.exp = timespan_1.default(options.expiresIn, timestamp);
+                delete options.expiresIn;
+            }
+            payload.jti = utils_1.randomAlnumString(jwtIdLength);
+            const secretKey = yield this.getSecretKey();
+            if (secretKey === null)
+                throw new Error('Cannot get secret key');
+            const jwt = yield jwtSignAsync(payload, secretKey, options);
+            if (payload.uid) {
+                const userSet = 'jwt:uid:' + payload.uid;
+                yield this.client.zremrangebyscoreAsync(userSet, '-inf', timestamp);
+                yield this.client.zaddAsync(userSet, 'NX', payload.exp || '+inf', payload.jti);
+            }
+            return jwt;
+        });
+    }
+    /**
+     * Verify JWT, return payload on success or throw error.
+     *
+     * @param token {string} JWT
+     * @return {Promise.&lt;object>} payload
+     */
+    verify(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const secretKey = yield this.getSecretKey();
+            if (secretKey === null)
+                throw new Error('Cannot get secret key');
+            const payload = yield jwtVerifyAsync(token, secretKey);
+            if (payload.uid) {
+                const expire = yield this.client.zscoreAsync('jwt:uid:' + payload.uid, payload.jti);
+                if (expire === null)
+                    throw new RevokedError('jwt revoked');
+            }
+            return payload;
+        });
+    }
+    /**
+     * Revoke one user's appointed or all JWT
+     *
+     * @param uid {string} user id
+     * @param jti {string} optional，JWT id, revoke all JWT if omitted.
+     * @return {Promise.&lt;void>}
+     */
+    revoke(uid, jti) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (jti !== undefined) {
+                yield this.client.zremAsync('jwt:uid:' + uid, jti);
+            }
+            else {
+                yield this.client.delAsync('jwt:uid:' + uid);
+            }
+        });
+    }
+}
+exports.Jwt = Jwt;
+function default_1(initialGlobal) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const model = new Jwt(initialGlobal.redis);
+        if (cluster_1.default.isMaster || cluster_1.default.worker.id === 1) {
+            let secretKey = yield model.getSecretKey();
+            if (!secretKey) {
+                secretKey = yield cryptoRandomBytesAsync(256);
+                yield model.setSecretKey(secretKey);
+                winston_1.default.warn('Generate new secret key');
+            }
+        }
+        return model;
+    });
+}
+exports.default = default_1;
+//# sourceMappingURL=jwt.js.map</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Sun Jan 12 2020 02:29:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

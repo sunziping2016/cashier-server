@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Classes</li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html">Jwt</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#getSecretKey">getSecretKey</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#revoke">revoke</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#setSecretKey">setSecretKey</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#sign">sign</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_jwt-Jwt.html#verify">verify</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_jwt-RevokedError.html">RevokedError</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-Permission.html">Permission</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-Role.html">Role</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_models_users-User.html">User</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_users-User.html#checkPassword">checkPassword</a></span></li><li class="nav-heading"><span class="nav-item-type type-class">C</span><span class="nav-item-name"><a href="module-src_server-Server.html">Server</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_server-Server.html#start">start</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_server-Server.html#stop">stop</a></span></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_koa-logger.html">src/koa-logger</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_koa-logger.html#~koaLogger">koaLogger</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_hooks.html">src/models/hooks</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_hooks.html#~addDeleted">addDeleted</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_models_hooks.html#~addFileFields">addFileFields</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_jwt.html">src/models/jwt</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_models_users.html">src/models/users</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_server.html">src/server</a></span></li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-src_utils.html">src/utils</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-src_utils.html#~randomAlnumString">randomAlnumString</a></span></li>
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+
+    <section class="readme">
+        <article><h1>Cashier Server</h1>
+<p><a href="https://travis-ci.org/sunziping2016/cashier-server"><img src="https://travis-ci.org/sunziping2016/cashier-server.svg?branch=master" alt="Build Status"></a>
+<a href="https://codecov.io/gh/sunziping2016/cashier-server"><img src="https://codecov.io/gh/sunziping2016/cashier-server/branch/master/graph/badge.svg" alt="codecov"></a>
+<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></p>
+<p>It's the server-side my double-entry accounting system.</p>
+<h2>Getting Started</h2>
+<h3>Prerequisites</h3>
+<p>First, execute the following commands.</p>
+<pre class="prettyprint source lang-shell"><code>git clone git@github.com:sunziping2016/cashier-server.git
+cd cashier-server
+npm install
+cp config/config.example.json config/config.json
+cp config/config.example.json config/config.test.json
+</code></pre>
+<p>Then, edit <code>config.json</code> and <code>config.test.json</code> if necessary. They include the
+settings for database connections, number of works etc.</p>
+<h3>Run Server</h3>
+<p>Execute the following commands.</p>
+<pre class="prettyprint source lang-shell"><code>npm run build
+npm run serve
+</code></pre>
+<h3>Run Tests</h3>
+<p>Execute the following commands.</p>
+<pre class="prettyprint source lang-shell"><code>npm run test-coverage
+</code></pre>
+<h2>Documentation</h2>
+<p><a href="https://sunziping2016.github.io/cashier-server/0.1.0/">Cashier Server - Documentation</a></p>
+<h2>Authors</h2>
+<ul>
+<li>Ziping Sun</li>
+</ul>
+<h2>License</h2>
+<p>This project is licensed under the MIT License - see the <code>LICENSE</code> file for
+details</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Sun Jan 12 2020 02:29:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
