@@ -77,7 +77,6 @@ export class Auth {
 export enum ErrorsEnum {
   OK = 200,
   CREATED = 201,
-  NO_CONTENT = 204,
   SCHEMA = 400,
   INVALID = 400,
   UNAUTHORIZED = 401,

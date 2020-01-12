@@ -14,7 +14,7 @@ import {
   addDeleted,
   AddDeletedDocument,
   AddDeletedModel,
-  addFileFields,
+  addFileFields, addSearchMethod, SearchModel,
 } from './hooks';
 import predefined from './rbacPredefined';
 
@@ -47,13 +47,15 @@ export interface UserDocument extends mongoose.Document, AddDeletedDocument {
   checkPassword(password: string): Promise<boolean>;
 }
 
+export interface PermissionModel extends mongoose.Model<PermissionDocument>,
+  SearchModel {}
+export interface RoleModel extends mongoose.Model<RoleDocument>, SearchModel {}
 export interface UserModel extends mongoose.Model<UserDocument>,
-  AddDeletedModel<UserDocument> {
-}
+  AddDeletedModel<UserDocument>, SearchModel {}
 
 export interface RBACModels {
-  permissions: mongoose.Model<PermissionDocument>;
-  roles: mongoose.Model<RoleDocument>;
+  permissions: PermissionModel;
+  roles: RoleModel;
   users: UserModel;
 }
 
@@ -155,6 +157,9 @@ export default async (initialGlobal: InitialGlobal): Promise<RBACModels> => {
     index: config.elasticIndexPrefix + 'permissions',
     type: 'permission',
   });
+  addSearchMethod(permissionSchema, new Set<string>([
+    '_v',
+  ]));
   /**
    * Available as `ctx.global.roles`. Contains following fields:
    * - `name`: name of the role. Required.
@@ -175,9 +180,12 @@ export default async (initialGlobal: InitialGlobal): Promise<RBACModels> => {
     index: config.elasticIndexPrefix + 'roles',
     type: 'role',
   });
-  const permissionModel = db.model<PermissionDocument>('permissions',
-    permissionSchema);
-  const roleModel = db.model<RoleDocument>('roles', roleSchema);
+  addSearchMethod(roleSchema, new Set<string>([
+    '_v',
+  ]));
+  const permissionModel = db.model<PermissionDocument, PermissionModel>(
+    'permissions', permissionSchema);
+  const roleModel = db.model<RoleDocument, RoleModel>('roles', roleSchema);
   if (collections.indexOf('permissions') === -1 && predefined.permissions) {
     logger.info('Initialize permissions database');
     await initPermissions(permissionModel, predefined.permissions);
@@ -254,6 +262,10 @@ export default async (initialGlobal: InitialGlobal): Promise<RBACModels> => {
     index: config.elasticIndexPrefix + 'users',
     type: 'user',
   });
+  addSearchMethod(userSchema, new Set<string>([
+    '_v',
+    'password',
+  ]));
   const userModel = db.model<UserDocument, UserModel>('users', userSchema);
   if (collections.indexOf('users') === -1 && predefined.users) {
     logger.info('Initialize users database');

@@ -1,33 +1,50 @@
 {
-const buildFunctionNode = nodeTypes.function.buildNodeWithArgumentNodes;
-const buildLiteralNode = nodeTypes.literal.buildNode;
-const buildNamedArgNode = nodeTypes.namedArg.buildNode;
-const buildQueryNode = nodeTypes.query.buildNode;
-const buildWildcardNode = nodeTypes.wildcard.buildNode;
-const { wildcardSymbol } = nodeTypes.wildcard;
+const wildcardSymbol = '@cashier-wildcard@';
 }
 
 start
   = Space* query:OrQuery? Space* {
     if (query !== null) return query;
-    return nodeTypes.function.buildNode('is', '*', '*');
+    return {
+      type: 'is',
+      field: {
+        type: 'wildcard',
+        value: ['', ''],
+      },
+      value: {
+        type: 'wildcard',
+        value: ['', ''],
+      },
+      isPhrase: false,
+    };
   }
 
 OrQuery
   = left:AndQuery Or right:OrQuery {
-    return buildFunctionNode('or', [left, right]);
+    return {
+      type: 'or',
+      left,
+      right,
+    };
   }
   / AndQuery
 
 AndQuery
   = left:NotQuery And right:AndQuery {
-    return buildFunctionNode('and', [left, right]);
+    return {
+      type: 'and',
+      left,
+      right,
+    };
   }
   / NotQuery
 
 NotQuery
   = Not query:SubQuery {
-    return buildFunctionNode('not', [query]);
+    return {
+      type: 'not',
+      query,
+    };
   }
   / SubQuery
 
@@ -45,8 +62,12 @@ Field "fieldName"
 
 FieldRangeExpression
   = field:Field Space* operator:RangeOperator Space* value:Literal {
-    const range = buildNamedArgNode(operator, value);
-    return buildFunctionNode('range', [field, range]);
+    return {
+      type: 'range',
+      field,
+      operator,
+      value,
+    };
   }
 
 FieldValueExpression
@@ -56,8 +77,7 @@ FieldValueExpression
 
 ValueExpression
   = partial:Value {
-    const field = buildLiteralNode(null);
-    return partial(field);
+    return partial(null);
   }
 
 ListOfValues
@@ -66,30 +86,49 @@ ListOfValues
 
 OrListOfValues
   = partialLeft:AndListOfValues Or partialRight:OrListOfValues {
-    return (field) => buildFunctionNode('or', [partialLeft(field), partialRight(field)]);
+    return (field) => ({
+      type: 'or',
+      left: partialLeft(field),
+      right: partialRight(field),
+    });
   }
   / AndListOfValues
 
 AndListOfValues
   = partialLeft:NotListOfValues And partialRight:AndListOfValues {
-    return (field) => buildFunctionNode('and', [partialLeft(field), partialRight(field)]);
+    return (field) => ({
+      type: 'and',
+      left: partialLeft(field),
+      right: partialRight(field),
+    });
   }
   / NotListOfValues
 
 NotListOfValues
   = Not partial:ListOfValues {
-    return (field) => buildFunctionNode('not', [partial(field)]);
+    return (field) => ({
+      type: 'not',
+      query: partial(field),
+    });
   }
   / ListOfValues
 
 Value "value"
   = value:QuotedString {
-    const isPhrase = buildLiteralNode(true);
-    return (field) => buildFunctionNode('is', [field, value, isPhrase]);
+    return (field) => ({
+      type: 'is',
+      field,
+      value,
+      isPhrase: true
+    });
   }
   / value:UnquotedLiteral {
-    const isPhrase = buildLiteralNode(false);
-    return (field) => buildFunctionNode('is', [field, value, isPhrase]);
+    return (field) => ({
+      type: 'is',
+      field,
+      value,
+      isPhrase: false
+    });
   }
   / value:QueryValue
 
@@ -107,7 +146,7 @@ Literal "literal"
 
 QuotedString
   = '"' chars:QuotedCharacter* '"' {
-    return buildLiteralNode(chars.join(''));
+    return {type: 'literal', value: chars.join('')};
   }
 
 QuotedCharacter
@@ -117,15 +156,25 @@ QuotedCharacter
 
 UnquotedLiteral
   = chars:UnquotedCharacter+ {
-     const sequence = chars.join('').trim();
-     if (sequence === 'null') return buildLiteralNode(null);
-     if (sequence === 'true') return buildLiteralNode(true);
-     if (sequence === 'false') return buildLiteralNode(false);
-     if (chars.includes(wildcardSymbol)) return buildWildcardNode(sequence);
-     const num = Number(sequence);
-     const value = isNaN(num) ? sequence : num;
-     return buildLiteralNode(value);
-   }
+    const sequence = chars.join('').trim();
+    if (chars.includes(wildcardSymbol)) {
+      const splits = [];
+      let lastIndex = 0;
+      let index;
+      while (true) {
+        index = chars.indexOf(wildcardSymbol, lastIndex);
+        if (index === -1) break;
+        splits.push(chars.slice(lastIndex, index));
+        lastIndex = index + 1;
+      }
+      splits.push(chars.slice(lastIndex));
+      return {
+        type: 'wildcard',
+        value: splits.map(x => x.join('')),
+      };
+    }
+    return {type: 'literal', value: sequence};
+  }
 
 UnquotedCharacter
   = EscapedWhitespace
@@ -152,7 +201,7 @@ Keyword
   = Or / And / Not
 
 SpecialCharacter
-  = [\\():<>"*@.]
+  = [\\():<>"*@]
 
 RangeOperator
   = '<=' { return 'lte'; }
@@ -164,6 +213,11 @@ Space "whitespace"
   = [\ \t\r\n]
 
 QueryValue
-  = '@' index:Literal '(' Space* query:OrQuery? Space* ')' path:('.' Literal)* {
-    return (field) => buildQueryNode(index, query, path.map(x => x[1]));
+  = '@' index:Literal '(' Space* query:OrQuery? Space* ')' {
+    return (field) => ({
+      type: 'query',
+      field,
+      index,
+      query
+    });
   }

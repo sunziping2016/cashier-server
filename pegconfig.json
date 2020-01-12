@@ -1,7 +1,6 @@
 {
   "tspegjs": {
     "noTslint": false,
-    "tslintIgnores": "prefer-const,quotemark,max-line-length,only-arrow-functions,trailing-comma,object-literal-shorthand,one-variable-per-declaration,no-consecutive-blank-lines",
-    "customHeader": "import {nodeTypes} from './nodeTypes';"
+    "tslintIgnores": "prefer-const,quotemark,max-line-length,only-arrow-functions,trailing-comma,object-literal-shorthand,one-variable-per-declaration,no-consecutive-blank-lines"
   }
 }

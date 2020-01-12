@@ -12,10 +12,10 @@ import {
   ModelUpdateOptions,
   Query,
   QueryFindOneAndUpdateOptions,
-  Schema,
+  Schema, SchemaType,
 } from 'mongoose';
 import path from 'path';
-import util from 'util';
+import util, {promisify} from 'util';
 import logger from 'winston';
 
 const unlinkAsync = util.promisify(fs.unlink);
@@ -435,4 +435,14 @@ export function addFileFields(
       }
     }
   });
+}
+
+export interface SearchModel {
+  paths: string[];
+  searchAsync(query: any, options?: any): Promise<any>;
+}
+
+export function addSearchMethod(schema: Schema, exclude: Set<string>) {
+  schema.statics.searchAsync = promisify(schema.statics.search);
+  schema.statics.paths = Object.keys(schema.paths).filter(x => !exclude.has(x));
 }

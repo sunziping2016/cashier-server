@@ -13,7 +13,6 @@
 
 "use strict";
 
-import {nodeTypes} from './nodeTypes';
 export interface IFilePosition {
   offset: number;
   line: number;
@@ -176,16 +175,38 @@ function peg$parse(input: string, options?: IParseOptions) {
 
   const peg$c0 = function(query: any): any {
       if (query !== null) return query;
-      return nodeTypes.function.buildNode('is', '*', '*');
+      return {
+        type: 'is',
+        field: {
+          type: 'wildcard',
+          value: ['', ''],
+        },
+        value: {
+          type: 'wildcard',
+          value: ['', ''],
+        },
+        isPhrase: false,
+      };
     };
   const peg$c1 = function(left: any, right: any): any {
-      return buildFunctionNode('or', [left, right]);
+      return {
+        type: 'or',
+        left,
+        right,
+      };
     };
   const peg$c2 = function(left: any, right: any): any {
-      return buildFunctionNode('and', [left, right]);
+      return {
+        type: 'and',
+        left,
+        right,
+      };
     };
   const peg$c3 = function(query: any): any {
-      return buildFunctionNode('not', [query]);
+      return {
+        type: 'not',
+        query,
+      };
     };
   const peg$c4 = "(";
   const peg$c5 = peg$literalExpectation("(", false);
@@ -194,8 +215,12 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c8 = function(query: any): any { return query; };
   const peg$c9 = peg$otherExpectation("fieldName");
   const peg$c10 = function(field: any, operator: any, value: any): any {
-      const range = buildNamedArgNode(operator, value);
-      return buildFunctionNode('range', [field, range]);
+      return {
+        type: 'range',
+        field,
+        operator,
+        value,
+      };
     };
   const peg$c11 = ":";
   const peg$c12 = peg$literalExpectation(":", false);
@@ -203,27 +228,45 @@ function peg$parse(input: string, options?: IParseOptions) {
       return partial(field);
     };
   const peg$c14 = function(partial: any): any {
-      const field = buildLiteralNode(null);
-      return partial(field);
+      return partial(null);
     };
   const peg$c15 = function(partial: any): any { return partial; };
   const peg$c16 = function(partialLeft: any, partialRight: any): any {
-      return (field) => buildFunctionNode('or', [partialLeft(field), partialRight(field)]);
+      return (field) => ({
+        type: 'or',
+        left: partialLeft(field),
+        right: partialRight(field),
+      });
     };
   const peg$c17 = function(partialLeft: any, partialRight: any): any {
-      return (field) => buildFunctionNode('and', [partialLeft(field), partialRight(field)]);
+      return (field) => ({
+        type: 'and',
+        left: partialLeft(field),
+        right: partialRight(field),
+      });
     };
   const peg$c18 = function(partial: any): any {
-      return (field) => buildFunctionNode('not', [partial(field)]);
+      return (field) => ({
+        type: 'not',
+        query: partial(field),
+      });
     };
   const peg$c19 = peg$otherExpectation("value");
   const peg$c20 = function(value: any): any {
-      const isPhrase = buildLiteralNode(true);
-      return (field) => buildFunctionNode('is', [field, value, isPhrase]);
+      return (field) => ({
+        type: 'is',
+        field,
+        value,
+        isPhrase: true
+      });
     };
   const peg$c21 = function(value: any): any {
-      const isPhrase = buildLiteralNode(false);
-      return (field) => buildFunctionNode('is', [field, value, isPhrase]);
+      return (field) => ({
+        type: 'is',
+        field,
+        value,
+        isPhrase: false
+      });
     };
   const peg$c22 = peg$otherExpectation("OR");
   const peg$c23 = "or";
@@ -238,7 +281,7 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c32 = "\"";
   const peg$c33 = peg$literalExpectation("\"", false);
   const peg$c34 = function(chars: any): any {
-      return buildLiteralNode(chars.join(''));
+      return {type: 'literal', value: chars.join('')};
     };
   const peg$c35 = "\\";
   const peg$c36 = peg$literalExpectation("\\", false);
@@ -248,15 +291,25 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c40 = /^[^"]/;
   const peg$c41 = peg$classExpectation(["\""], true, false);
   const peg$c42 = function(chars: any): any {
-       const sequence = chars.join('').trim();
-       if (sequence === 'null') return buildLiteralNode(null);
-       if (sequence === 'true') return buildLiteralNode(true);
-       if (sequence === 'false') return buildLiteralNode(false);
-       if (chars.includes(wildcardSymbol)) return buildWildcardNode(sequence);
-       const num = Number(sequence);
-       const value = isNaN(num) ? sequence : num;
-       return buildLiteralNode(value);
-     };
+      const sequence = chars.join('').trim();
+      if (chars.includes(wildcardSymbol)) {
+        const splits = [];
+        let lastIndex = 0;
+        let index;
+        while (true) {
+          index = chars.indexOf(wildcardSymbol, lastIndex);
+          if (index === -1) break;
+          splits.push(chars.slice(lastIndex, index));
+          lastIndex = index + 1;
+        }
+        splits.push(chars.slice(lastIndex));
+        return {
+          type: 'wildcard',
+          value: splits.map(x => x.join('')),
+        };
+      }
+      return {type: 'literal', value: sequence};
+    };
   const peg$c43 = peg$anyExpectation();
   const peg$c44 = "*";
   const peg$c45 = peg$literalExpectation("*", false);
@@ -271,8 +324,8 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c54 = peg$literalExpectation("\\n", false);
   const peg$c55 = function(): any { return '\n'; };
   const peg$c56 = function(keyword: any): any { return keyword; };
-  const peg$c57 = /^[\\():<>"*@.]/;
-  const peg$c58 = peg$classExpectation(["\\", "(", ")", ":", "<", ">", "\"", "*", "@", "."], false, false);
+  const peg$c57 = /^[\\():<>"*@]/;
+  const peg$c58 = peg$classExpectation(["\\", "(", ")", ":", "<", ">", "\"", "*", "@"], false, false);
   const peg$c59 = "<=";
   const peg$c60 = peg$literalExpectation("<=", false);
   const peg$c61 = function(): any { return 'lte'; };
@@ -290,10 +343,13 @@ function peg$parse(input: string, options?: IParseOptions) {
   const peg$c73 = peg$classExpectation([" ", "\t", "\r", "\n"], false, false);
   const peg$c74 = "@";
   const peg$c75 = peg$literalExpectation("@", false);
-  const peg$c76 = ".";
-  const peg$c77 = peg$literalExpectation(".", false);
-  const peg$c78 = function(index: any, query: any, path: any): any {
-      return (field) => buildQueryNode(index, query, path.map(x => x[1]));
+  const peg$c76 = function(index: any, query: any): any {
+      return (field) => ({
+        type: 'query',
+        field,
+        index,
+        query
+      });
     };
 
   let peg$currPos = 0;
@@ -1603,7 +1659,7 @@ function peg$parse(input: string, options?: IParseOptions) {
   }
 
   function peg$parseQueryValue(): any {
-    let s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11;
+    let s0, s1, s2, s3, s4, s5, s6, s7;
 
     s0 = peg$currPos;
     if (input.charCodeAt(peg$currPos) === 64) {
@@ -1651,60 +1707,9 @@ function peg$parse(input: string, options?: IParseOptions) {
                   if (peg$silentFails === 0) { peg$fail(peg$c7); }
                 }
                 if (s7 !== peg$FAILED) {
-                  s8 = [];
-                  s9 = peg$currPos;
-                  if (input.charCodeAt(peg$currPos) === 46) {
-                    s10 = peg$c76;
-                    peg$currPos++;
-                  } else {
-                    s10 = peg$FAILED;
-                    if (peg$silentFails === 0) { peg$fail(peg$c77); }
-                  }
-                  if (s10 !== peg$FAILED) {
-                    s11 = peg$parseLiteral();
-                    if (s11 !== peg$FAILED) {
-                      s10 = [s10, s11];
-                      s9 = s10;
-                    } else {
-                      peg$currPos = s9;
-                      s9 = peg$FAILED;
-                    }
-                  } else {
-                    peg$currPos = s9;
-                    s9 = peg$FAILED;
-                  }
-                  while (s9 !== peg$FAILED) {
-                    s8.push(s9);
-                    s9 = peg$currPos;
-                    if (input.charCodeAt(peg$currPos) === 46) {
-                      s10 = peg$c76;
-                      peg$currPos++;
-                    } else {
-                      s10 = peg$FAILED;
-                      if (peg$silentFails === 0) { peg$fail(peg$c77); }
-                    }
-                    if (s10 !== peg$FAILED) {
-                      s11 = peg$parseLiteral();
-                      if (s11 !== peg$FAILED) {
-                        s10 = [s10, s11];
-                        s9 = s10;
-                      } else {
-                        peg$currPos = s9;
-                        s9 = peg$FAILED;
-                      }
-                    } else {
-                      peg$currPos = s9;
-                      s9 = peg$FAILED;
-                    }
-                  }
-                  if (s8 !== peg$FAILED) {
-                    peg$savedPos = s0;
-                    s1 = peg$c78(s2, s5, s8);
-                    s0 = s1;
-                  } else {
-                    peg$currPos = s0;
-                    s0 = peg$FAILED;
-                  }
+                  peg$savedPos = s0;
+                  s1 = peg$c76(s2, s5);
+                  s0 = s1;
                 } else {
                   peg$currPos = s0;
                   s0 = peg$FAILED;
@@ -1738,12 +1743,7 @@ function peg$parse(input: string, options?: IParseOptions) {
   }
 
 
-  const buildFunctionNode = nodeTypes.function.buildNodeWithArgumentNodes;
-  const buildLiteralNode = nodeTypes.literal.buildNode;
-  const buildNamedArgNode = nodeTypes.namedArg.buildNode;
-  const buildQueryNode = nodeTypes.query.buildNode;
-  const buildWildcardNode = nodeTypes.wildcard.buildNode;
-  const { wildcardSymbol } = nodeTypes.wildcard;
+  const wildcardSymbol = '@cashier-wildcard@';
 
 
   peg$result = peg$startRuleFunction();
