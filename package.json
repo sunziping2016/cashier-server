@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.5.0",
-    "ajv": "^6.10.2",
+    "ajv": "^6.12.3",
     "bcrypt": "^3.0.7",
     "command": "0.0.5",
     "http-errors": "^1.7.3",
